@@ -152,5 +152,5 @@ function nextLevel() {
     document.getElementById('nextLevelButton').style.display = 'none';
 }
 
-// Inicializar o exercício inicial
+// Inicializa o nível 1
 showExercise();
