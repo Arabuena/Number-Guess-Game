@@ -59,11 +59,17 @@ function draw(e) {
 
 function drawTouch(e) {
     if (!drawing) return;
-    e.preventDefault(); // Impede o comportamento padrão de rolagem
-    ctx.lineTo(e.touches[0].clientX - canvas.offsetLeft, 
-               e.touches[0].clientY - canvas.offsetTop);
+    e.preventDefault(); // Impede a rolagem
+
+    // Ajuste da coordenada Y levando em consideração a posição do canvas na tela
+    const rect = canvas.getBoundingClientRect();
+    const x = e.touches[0].clientX - rect.left;
+    const y = e.touches[0].clientY - rect.top;
+
+    ctx.lineTo(x, y);
     ctx.stroke();
 }
+
 
 function stopDrawing() {
     drawing = false;
