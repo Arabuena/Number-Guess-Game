@@ -83,7 +83,7 @@ function toggleEraser() {
 
 function showExercise() {
     const exercise = exercises[currentExercise];
-    document.getElementById('exercises').innerHTML = `
+    document.getElementById('exercises').innerHTML = `    
         <div class="exercise">
             <p><strong>Exercício ${currentExercise + 1}:</strong> ${exercise.equation}</p>
             <p><span class="hint">Dica: ${exercise.hint}</span></p>
@@ -135,22 +135,23 @@ function showResults() {
 
 function nextLevel() {
     if (currentLevel === 1) {
-        currentLevel = 2;
+        // Passar para o nível 2
         exercises = level2Exercises;
+        currentExercise = 0;
         document.getElementById('videoContainerLevel1').style.display = 'none';
         document.getElementById('videoContainerLevel2').style.display = 'block';
-        document.getElementById('levelTitle').textContent = 'Nível 2: Multiplicação e Divisão';
+        document.getElementById('levelTitle').textContent = "Nível 2: Multiplicação e Divisão";
     } else if (currentLevel === 2) {
-        currentLevel = 3;
+        // Passar para o nível 3
         exercises = level3Exercises;
+        currentExercise = 0;
         document.getElementById('videoContainerLevel2').style.display = 'none';
         document.getElementById('videoContainerLevel3').style.display = 'block';
-        document.getElementById('levelTitle').textContent = 'Nível 3: Potenciação com Números Negativos';
+        document.getElementById('levelTitle').textContent = "Nível 3: Potenciação";
     }
-    currentExercise = 0;
-    showExercise();
+    currentLevel++;
     document.getElementById('nextLevelButton').style.display = 'none';
+    showExercise();
 }
 
-// Inicializa o nível 1
 showExercise();
