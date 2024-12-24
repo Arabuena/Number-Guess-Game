@@ -36,11 +36,17 @@ const ctx = canvas.getContext("2d");
 let drawing = false;
 let eraser = false;
 
-// Ajuste do tamanho do canvas para dispositivos móveis
-canvas.width = window.innerWidth * 0.9; // 90% da largura da tela
-canvas.height = 300; // Altura fixa para o canvas
+// Função para ativar/desativar o desenho com o botão de lápis
+function toggleDrawing() {
+    drawing = !drawing; // Alterna entre ativar/desativar o modo de desenho
+    if (drawing) {
+        document.getElementById("pencilButton").textContent = "Desenho Ativado";
+    } else {
+        document.getElementById("pencilButton").textContent = "Ativar Desenho";
+    }
+}
 
-// Função para iniciar o desenho
+// Função para começar o desenho
 function startDrawing(e) {
     if (!drawing) return;
     ctx.lineWidth = document.getElementById("lineWidth").value;
@@ -48,57 +54,54 @@ function startDrawing(e) {
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     ctx.beginPath();
-    ctx.moveTo(e.offsetX, e.offsetY);
+    ctx.moveTo(e.offsetX || e.touches[0].offsetX, e.offsetY || e.touches[0].offsetY);
     canvas.addEventListener("mousemove", draw);
+    canvas.addEventListener("touchmove", drawTouch); // Suporte ao toque
 }
 
-// Função para desenhar no canvas
+// Função para desenhar com o mouse
 function draw(e) {
     if (!drawing) return;
-    ctx.lineTo(e.offsetX, e.offsetY);
+    ctx.lineTo(e.offsetX || e.touches[0].offsetX, e.offsetY || e.touches[0].offsetY);
     ctx.stroke();
 }
 
-// Função para parar de desenhar
+// Função para desenhar com o toque
+function drawTouch(e) {
+    if (!drawing) return;
+    e.preventDefault(); // Evita o comportamento padrão de toque (como rolar a página)
+    ctx.lineTo(e.touches[0].clientX, e.touches[0].clientY);
+    ctx.stroke();
+}
+
+// Função para parar o desenho
 function stopDrawing() {
     drawing = false;
     canvas.removeEventListener("mousemove", draw);
+    canvas.removeEventListener("touchmove", drawTouch);
 }
 
-// Função para obter a posição do toque ou clique no canvas
-function getPosition(e) {
-    let rect = canvas.getBoundingClientRect();
-    let x = e.touches ? e.touches[0].clientX : e.clientX;
-    let y = e.touches ? e.touches[0].clientY : e.clientY;
-    return [x - rect.left, y - rect.top];
-}
-
-// Funções para lidar com toques em dispositivos móveis
-canvas.addEventListener("touchstart", (e) => {
-    e.preventDefault();  // Previne o comportamento de rolagem
-    drawing = true;
-    startDrawing(e);
-});
-
-canvas.addEventListener("touchmove", draw);
-canvas.addEventListener("touchend", stopDrawing);
-canvas.addEventListener("touchcancel", stopDrawing);
-
-// Funções para lidar com cliques e movimento do mouse
+// Eventos de mouse e toque
 canvas.addEventListener("mousedown", (e) => {
-    drawing = true;
-    startDrawing(e);
+    if (drawing) startDrawing(e);
 });
 
 canvas.addEventListener("mouseup", stopDrawing);
 canvas.addEventListener("mouseleave", stopDrawing);
+
+canvas.addEventListener("touchstart", (e) => {
+    if (drawing) startDrawing(e);
+});
+
+canvas.addEventListener("touchend", stopDrawing);
+canvas.addEventListener("touchcancel", stopDrawing);
 
 // Função para limpar o canvas
 function clearCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-// Função para alternar entre o modo desenho e borracha
+// Função para alternar a borracha
 function toggleEraser() {
     eraser = !eraser;
     if (eraser) {
@@ -110,7 +113,7 @@ function toggleEraser() {
     }
 }
 
-// Função para exibir o exercício atual
+// Mostrar exercícios
 function showExercise() {
     const exercise = exercises[currentExercise];
     document.getElementById('exercises').innerHTML = `    
@@ -122,7 +125,7 @@ function showExercise() {
     document.getElementById('message').innerHTML = '';
 }
 
-// Função para submeter a resposta
+// Submeter resposta
 function submitAnswer() {
     const userAnswer = parseInt(document.getElementById('answer').value);
     const correctAnswer = exercises[currentExercise].answer;
@@ -138,7 +141,7 @@ function submitAnswer() {
     }
 }
 
-// Função para exibir os resultados
+// Exibir resultados
 function showResults() {
     let feedback = '';
     let correctAnswersCount = 0;
@@ -154,28 +157,24 @@ function showResults() {
 
     document.getElementById('results').innerHTML = feedback;
 
-    // Cálculo do total acumulado de questões e acertos
     const totalQuestions = answers.length;
     document.getElementById('message').innerHTML = `Você acertou ${correctAnswersCount} de ${totalQuestions} questões!`;
 
-    // Exibe o botão "Próximo Nível" apenas se todas as respostas do nível atual forem corretas
     const levelCorrectAnswersCount = answers.slice(-exercises.length).filter((item, i) => item.correctAnswer === exercises[i].answer).length;
     if (levelCorrectAnswersCount === exercises.length) {
         document.getElementById('nextLevelButton').style.display = 'inline-block';
     }
 }
 
-// Função para ir para o próximo nível
+// Avançar para o próximo nível
 function nextLevel() {
     if (currentLevel === 1) {
-        // Passar para o nível 2
         exercises = level2Exercises;
         currentExercise = 0;
         document.getElementById('videoContainerLevel1').style.display = 'none';
         document.getElementById('videoContainerLevel2').style.display = 'block';
         document.getElementById('levelTitle').textContent = "Nível 2: Multiplicação e Divisão";
     } else if (currentLevel === 2) {
-        // Passar para o nível 3
         exercises = level3Exercises;
         currentExercise = 0;
         document.getElementById('videoContainerLevel2').style.display = 'none';
@@ -187,5 +186,5 @@ function nextLevel() {
     showExercise();
 }
 
-// Exibir o exercício inicial
+// Iniciar o primeiro exercício
 showExercise();
