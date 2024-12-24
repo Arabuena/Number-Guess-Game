@@ -76,7 +76,6 @@ canvas {
     touch-action: none; /* Desativa o comportamento padrão de toque (impede o scroll durante o desenho) */
 }
 
-
 /* Ajustes para dispositivos menores */
 @media (max-width: 600px) {
     .container {
@@ -92,6 +91,7 @@ canvas {
     }
 }
 
+/* Estilo para botões e controles */
 button, select, input[type="range"], input[type="color"] {
     margin: 10px;
     padding: 10px 20px;
@@ -99,13 +99,16 @@ button, select, input[type="range"], input[type="color"] {
     cursor: pointer;
     border: 2px solid var(--primary-color);
     border-radius: var(--border-radius);
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
+/* Efeito de hover para botões */
 button:hover {
     background-color: #45a049;
+    transform: scale(1.05); /* Leve aumento no tamanho para interação */
 }
 
+/* Efeito de foco nos controles */
 button:focus, select:focus, input[type="range"]:focus, input[type="color"]:focus {
     outline: 3px solid #90ee90; /* Destaque ao receber foco */
     outline-offset: 2px;
@@ -142,21 +145,6 @@ button:focus, select:focus, input[type="range"]:focus, input[type="color"]:focus
     background-color: var(--highlight-color);
     color: var(--secondary-color);
     font-weight: bold;
-    max-width: 90%;
-    margin-left: auto;
-    margin-right: auto;
-    white-space: pre-line;
-}
-
-/* Resultados de respostas */
-.results {
-    margin-top: var(--spacing);
-    padding: var(--spacing);
-    border: 2px dashed var(--primary-color);
-    border-radius: var(--border-radius);
-    background-color: var(--highlight-color);
-    color: var(--secondary-color);
-    font-weight: bold;
     max-width: 90%; /* Ajusta a largura para 90% do container */
     width: 100%; /* Garante que a largura do campo seja 100% do container */
     margin-left: auto;
@@ -172,4 +160,31 @@ button:focus, select:focus, input[type="range"]:focus, input[type="color"]:focus
         padding: 15px; /* Reduz o padding */
         font-size: 14px; /* Ajusta o tamanho da fonte */
     }
+}
+
+/* Resultados de respostas */
+.result-item {
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #ffffff;
+    border: 1px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    font-size: 16px;
+}
+
+.result-item.correct {
+    background-color: var(--highlight-color);
+    border-color: var(--correct-color);
+}
+
+.result-item.incorrect {
+    background-color: #f8d7da;
+    border-color: var(--incorrect-color);
+}
+
+/* Estilo para dicas */
+.hint {
+    font-style: italic;
+    color: #888;
+    margin-top: 10px;
 }

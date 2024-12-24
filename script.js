@@ -30,85 +30,95 @@ let answers = [];
 let currentLevel = 1;
 let exercises = level1Exercises;
 
-// Função para obter a posição do canvas na página
-function getCanvasPosition(canvas) {
-    const rect = canvas.getBoundingClientRect();
-    return {
-        x: rect.left + window.scrollX,
-        y: rect.top + window.scrollY
-    };
-}
-
-// Função de desenho no canvas
+// Configuração do canvas para desenho
 const canvas = document.getElementById("drawingCanvas");
 const ctx = canvas.getContext("2d");
 let drawing = false;
 let eraser = false;
+let lastX = null;
+let lastY = null; // Variáveis para armazenar as últimas coordenadas
 
-// Função para ativar/desativar o desenho com o botão de lápis
+// Função para ativar/desativar o modo de desenho
 function toggleDrawing() {
-    drawing = !drawing; // Alterna entre ativar/desativar o modo de desenho
+    drawing = !drawing;
+    const pencilButton = document.getElementById("pencilButton");
+
     if (drawing) {
-        document.getElementById("pencilButton").textContent = "Desenho Ativado";
+        pencilButton.textContent = "Desenho Ativado";
     } else {
-        document.getElementById("pencilButton").textContent = "Ativar Desenho";
+        pencilButton.textContent = "Ativar Desenho";
     }
 }
 
-// Função para começar o desenho
+// Função para obter o deslocamento do canvas em relação à página
+function getCanvasOffset() {
+    const rect = canvas.getBoundingClientRect();
+    return { x: rect.left, y: rect.top };
+}
+
+// Função para iniciar o desenho
 function startDrawing(e) {
     if (!drawing) return;
-    const canvasPosition = getCanvasPosition(canvas);
-    const x = e.offsetX || (e.touches[0].clientX - canvasPosition.x);
-    const y = e.offsetY || (e.touches[0].clientY - canvasPosition.y);
+
     ctx.lineWidth = document.getElementById("lineWidth").value;
     ctx.strokeStyle = document.getElementById("colorPicker").value;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
+
+    const offset = getCanvasOffset(); // Pega o deslocamento do canvas
+    const offsetX = e.clientX - offset.x; // Ajusta a posição do cursor
+    const offsetY = e.clientY - offset.y;
+
+    lastX = offsetX; // Salva as coordenadas iniciais
+    lastY = offsetY;
+
     ctx.beginPath();
-    ctx.moveTo(x, y);
-    canvas.addEventListener("mousemove", draw);
-    canvas.addEventListener("touchmove", drawTouch); // Suporte ao toque
+    ctx.moveTo(lastX, lastY);
 }
 
-// Função para desenhar com o mouse
+// Função para desenhar no canvas com suavização
 function draw(e) {
     if (!drawing) return;
-    const canvasPosition = getCanvasPosition(canvas);
-    const x = e.offsetX || (e.touches[0].clientX - canvasPosition.x);
-    const y = e.offsetY || (e.touches[0].clientY - canvasPosition.y);
-    ctx.lineTo(x, y);
-    ctx.stroke();
-}
 
-// Função para desenhar com o toque
-function drawTouch(e) {
-    if (!drawing) return;
-    e.preventDefault(); // Evita o comportamento padrão de toque (como rolar a página)
-    const canvasPosition = getCanvasPosition(canvas);
-    const x = e.touches[0].clientX - canvasPosition.x;
-    const y = e.touches[0].clientY - canvasPosition.y;
-    ctx.lineTo(x, y);
-    ctx.stroke();
+    const offset = getCanvasOffset(); // Pega o deslocamento do canvas
+    const offsetX = e.clientX - offset.x; // Ajusta a posição do cursor
+    const offsetY = e.clientY - offset.y;
+
+    // Suavizar a linha desenhada entre os pontos
+    if (lastX !== null && lastY !== null) {
+        ctx.lineTo(offsetX, offsetY);
+        ctx.stroke();
+    }
+
+    lastX = offsetX; // Atualiza a posição anterior
+    lastY = offsetY;
 }
 
 // Função para parar o desenho
 function stopDrawing() {
-    drawing = false;
+    if (!drawing) return;
+
     canvas.removeEventListener("mousemove", draw);
-    canvas.removeEventListener("touchmove", drawTouch);
+    canvas.removeEventListener("touchmove", draw);
+    lastX = null;
+    lastY = null; // Zera as coordenadas quando parar o desenho
 }
 
 // Eventos de mouse e toque
 canvas.addEventListener("mousedown", (e) => {
-    if (drawing) startDrawing(e);
+    if (drawing) {
+        startDrawing(e);
+        canvas.addEventListener("mousemove", draw);
+    }
 });
 
 canvas.addEventListener("mouseup", stopDrawing);
 canvas.addEventListener("mouseleave", stopDrawing);
-
 canvas.addEventListener("touchstart", (e) => {
-    if (drawing) startDrawing(e);
+    if (drawing) {
+        startDrawing(e);
+        canvas.addEventListener("touchmove", draw);
+    }
 });
 
 canvas.addEventListener("touchend", stopDrawing);
@@ -131,7 +141,7 @@ function toggleEraser() {
     }
 }
 
-// Mostrar exercícios
+// Funções relacionadas aos exercícios
 function showExercise() {
     const exercise = exercises[currentExercise];
     document.getElementById('exercises').innerHTML = `    
@@ -143,14 +153,10 @@ function showExercise() {
     document.getElementById('message').innerHTML = '';
 }
 
-// Submeter resposta
 function submitAnswer() {
     const userAnswer = parseInt(document.getElementById('answer').value);
     const correctAnswer = exercises[currentExercise].answer;
-    answers.push({
-        userAnswer: userAnswer,
-        correctAnswer: correctAnswer
-    });
+    answers.push({ userAnswer, correctAnswer });
     currentExercise++;
     if (currentExercise < exercises.length) {
         showExercise();
@@ -159,11 +165,9 @@ function submitAnswer() {
     }
 }
 
-// Exibir resultados
 function showResults() {
     let feedback = '';
     let correctAnswersCount = 0;
-
     answers.forEach((item, index) => {
         const resultClass = item.userAnswer === item.correctAnswer ? 'correct' : 'incorrect';
         if (item.userAnswer === item.correctAnswer) correctAnswersCount++;
@@ -172,37 +176,32 @@ function showResults() {
                         <p><strong>Resposta Esperada:</strong> ${item.correctAnswer}</p>
                     </div>`;
     });
-
-    document.getElementById('results').innerHTML = feedback;
-
     const totalQuestions = answers.length;
-    document.getElementById('message').innerHTML = `Você acertou ${correctAnswersCount} de ${totalQuestions} questões!`;
-
-    const levelCorrectAnswersCount = answers.slice(-exercises.length).filter((item, i) => item.correctAnswer === exercises[i].answer).length;
-    if (levelCorrectAnswersCount === exercises.length) {
+    const accuracy = (correctAnswersCount / totalQuestions) * 100;
+    document.getElementById('results').innerHTML = feedback;
+    document.getElementById('message').innerHTML = `Você acertou ${correctAnswersCount} de ${totalQuestions} questões! (${accuracy.toFixed(2)}%)`;
+    if (accuracy >= 60 && correctAnswersCount === exercises.length) {
         document.getElementById('nextLevelButton').style.display = 'inline-block';
+    } else {
+        document.getElementById('message').innerHTML += "<p>Você precisa acertar pelo menos 60% das questões para avançar. Tente novamente.</p>";
+        document.getElementById('nextLevelButton').style.display = 'none';
     }
 }
 
-// Avançar para o próximo nível
 function nextLevel() {
     if (currentLevel === 1) {
         exercises = level2Exercises;
         currentExercise = 0;
-        document.getElementById('videoContainerLevel1').style.display = 'none';
-        document.getElementById('videoContainerLevel2').style.display = 'block';
         document.getElementById('levelTitle').textContent = "Nível 2: Multiplicação e Divisão";
     } else if (currentLevel === 2) {
         exercises = level3Exercises;
         currentExercise = 0;
-        document.getElementById('videoContainerLevel2').style.display = 'none';
-        document.getElementById('videoContainerLevel3').style.display = 'block';
-        document.getElementById('levelTitle').textContent = "Nível 3: Potenciação com Números Negativos";
+        document.getElementById('levelTitle').textContent = "Nível 3: Potenciação";
     }
-    showExercise();
     currentLevel++;
     document.getElementById('nextLevelButton').style.display = 'none';
+    showExercise();
 }
 
-// Adicionando a função para avançar de nível
-document.getElementById('nextLevelButton').addEventListener('click', nextLevel);
+// Inicializar o primeiro exercício
+showExercise();
