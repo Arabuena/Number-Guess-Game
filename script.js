@@ -30,6 +30,15 @@ let answers = [];
 let currentLevel = 1;
 let exercises = level1Exercises;
 
+// Função para obter a posição do canvas na página
+function getCanvasPosition(canvas) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+        x: rect.left + window.scrollX,
+        y: rect.top + window.scrollY
+    };
+}
+
 // Função de desenho no canvas
 const canvas = document.getElementById("drawingCanvas");
 const ctx = canvas.getContext("2d");
@@ -49,12 +58,15 @@ function toggleDrawing() {
 // Função para começar o desenho
 function startDrawing(e) {
     if (!drawing) return;
+    const canvasPosition = getCanvasPosition(canvas);
+    const x = e.offsetX || (e.touches[0].clientX - canvasPosition.x);
+    const y = e.offsetY || (e.touches[0].clientY - canvasPosition.y);
     ctx.lineWidth = document.getElementById("lineWidth").value;
     ctx.strokeStyle = document.getElementById("colorPicker").value;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     ctx.beginPath();
-    ctx.moveTo(e.offsetX || e.touches[0].offsetX, e.offsetY || e.touches[0].offsetY);
+    ctx.moveTo(x, y);
     canvas.addEventListener("mousemove", draw);
     canvas.addEventListener("touchmove", drawTouch); // Suporte ao toque
 }
@@ -62,7 +74,10 @@ function startDrawing(e) {
 // Função para desenhar com o mouse
 function draw(e) {
     if (!drawing) return;
-    ctx.lineTo(e.offsetX || e.touches[0].offsetX, e.offsetY || e.touches[0].offsetY);
+    const canvasPosition = getCanvasPosition(canvas);
+    const x = e.offsetX || (e.touches[0].clientX - canvasPosition.x);
+    const y = e.offsetY || (e.touches[0].clientY - canvasPosition.y);
+    ctx.lineTo(x, y);
     ctx.stroke();
 }
 
@@ -70,7 +85,10 @@ function draw(e) {
 function drawTouch(e) {
     if (!drawing) return;
     e.preventDefault(); // Evita o comportamento padrão de toque (como rolar a página)
-    ctx.lineTo(e.touches[0].clientX, e.touches[0].clientY);
+    const canvasPosition = getCanvasPosition(canvas);
+    const x = e.touches[0].clientX - canvasPosition.x;
+    const y = e.touches[0].clientY - canvasPosition.y;
+    ctx.lineTo(x, y);
     ctx.stroke();
 }
 
@@ -179,12 +197,12 @@ function nextLevel() {
         currentExercise = 0;
         document.getElementById('videoContainerLevel2').style.display = 'none';
         document.getElementById('videoContainerLevel3').style.display = 'block';
-        document.getElementById('levelTitle').textContent = "Nível 3: Potenciação";
+        document.getElementById('levelTitle').textContent = "Nível 3: Potenciação com Números Negativos";
     }
-    currentLevel++;
-    document.getElementById('nextLevelButton').style.display = 'none';
-    showExercise();
-}
 
-// Iniciar o primeiro exercício
-showExercise();
+    currentLevel++;
+    answers = [];
+    showExercise();
+    document.getElementById('nextLevelButton').style.display = 'none';
+    document.getElementById('results').innerHTML = '';
+}
