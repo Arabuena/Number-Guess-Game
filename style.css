@@ -16,6 +16,12 @@ body {
     margin: 0;
     padding: 0;
     background-color: var(--background-color);
+    overflow-x: hidden; /* Evita rolagem lateral */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 h1 {
@@ -25,8 +31,8 @@ h1 {
 
 .video-container {
     margin: var(--spacing) auto;
-    width: 90%;
-    max-width: 1000px; /* Ajustando para que ocupe mais espaço no desktop */
+    width: 100%;
+    max-width: 1000px; /* Ajustando para desktop */
     position: relative;
     padding-bottom: 56.25%; /* Proporção 16:9 */
     height: 0;
@@ -44,16 +50,19 @@ h1 {
 /* Ajuste para desktop */
 @media (min-width: 1024px) {
     .video-container {
-        max-width: 1200px; /* Aumentando o máximo no desktop */
+        max-width: 1200px; /* Aumenta o máximo no desktop */
     }
 }
 
+/* Container principal */
 .container {
     margin: var(--spacing) auto;
-    width: 90%;
+    width: 100%;
     max-width: 800px;
+    padding: 0 10px;
 }
 
+/* Canvas responsivo */
 canvas {
     display: block;
     margin: var(--spacing) auto;
@@ -61,8 +70,12 @@ canvas {
     border-radius: var(--border-radius);
     cursor: crosshair;
     background-color: #fff;
+    width: 100%; /* Canvas ocupa 100% da largura disponível */
+    max-width: 100%; /* Limita o canvas a 100% da largura do container */
+    height: auto; /* Ajusta a altura automaticamente conforme a largura */
 }
 
+/* Estilos de botões e controles */
 button, select, input[type="range"], input[type="color"] {
     margin: 10px;
     padding: 10px 20px;
@@ -82,6 +95,7 @@ button:focus, select:focus, input[type="range"]:focus, input[type="color"]:focus
     outline-offset: 2px;
 }
 
+/* Controles responsivos */
 .controls {
     display: flex;
     justify-content: center;
@@ -98,6 +112,7 @@ button:focus, select:focus, input[type="range"]:focus, input[type="color"]:focus
     }
 }
 
+/* Estilos para mensagens e resultados */
 .message {
     margin-top: var(--spacing);
     font-size: 18px;
@@ -117,6 +132,7 @@ button:focus, select:focus, input[type="range"]:focus, input[type="color"]:focus
     white-space: pre-line;
 }
 
+/* Resultados de respostas */
 .result-item {
     margin-bottom: 15px;
     padding: 10px;
@@ -136,8 +152,24 @@ button:focus, select:focus, input[type="range"]:focus, input[type="color"]:focus
     border-color: var(--incorrect-color);
 }
 
+/* Estilo para dicas */
 .hint {
     font-style: italic;
     color: #888;
     margin-top: 10px;
+}
+
+/* Ajuste para garantir que o layout se encaixe bem na tela */
+@media (max-width: 600px) {
+    .container {
+        padding: 10px;
+    }
+
+    canvas {
+        height: 250px; /* Ajuste a altura para dispositivos menores */
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
 }
