@@ -199,10 +199,10 @@ function nextLevel() {
         document.getElementById('videoContainerLevel3').style.display = 'block';
         document.getElementById('levelTitle').textContent = "Nível 3: Potenciação com Números Negativos";
     }
-
-    currentLevel++;
-    answers = [];
     showExercise();
+    currentLevel++;
     document.getElementById('nextLevelButton').style.display = 'none';
-    document.getElementById('results').innerHTML = '';
 }
+
+// Adicionando a função para avançar de nível
+document.getElementById('nextLevelButton').addEventListener('click', nextLevel);
