@@ -36,6 +36,11 @@ const ctx = canvas.getContext("2d");
 let drawing = false;
 let eraser = false;
 
+// Ajuste do tamanho do canvas para dispositivos móveis
+canvas.width = window.innerWidth * 0.9; // 90% da largura da tela
+canvas.height = 300; // Altura fixa para o canvas
+
+// Função para iniciar o desenho
 function startDrawing(e) {
     if (!drawing) return;
     ctx.lineWidth = document.getElementById("lineWidth").value;
@@ -47,17 +52,39 @@ function startDrawing(e) {
     canvas.addEventListener("mousemove", draw);
 }
 
+// Função para desenhar no canvas
 function draw(e) {
     if (!drawing) return;
     ctx.lineTo(e.offsetX, e.offsetY);
     ctx.stroke();
 }
 
+// Função para parar de desenhar
 function stopDrawing() {
     drawing = false;
     canvas.removeEventListener("mousemove", draw);
 }
 
+// Função para obter a posição do toque ou clique no canvas
+function getPosition(e) {
+    let rect = canvas.getBoundingClientRect();
+    let x = e.touches ? e.touches[0].clientX : e.clientX;
+    let y = e.touches ? e.touches[0].clientY : e.clientY;
+    return [x - rect.left, y - rect.top];
+}
+
+// Funções para lidar com toques em dispositivos móveis
+canvas.addEventListener("touchstart", (e) => {
+    e.preventDefault();  // Previne o comportamento de rolagem
+    drawing = true;
+    startDrawing(e);
+});
+
+canvas.addEventListener("touchmove", draw);
+canvas.addEventListener("touchend", stopDrawing);
+canvas.addEventListener("touchcancel", stopDrawing);
+
+// Funções para lidar com cliques e movimento do mouse
 canvas.addEventListener("mousedown", (e) => {
     drawing = true;
     startDrawing(e);
@@ -66,10 +93,12 @@ canvas.addEventListener("mousedown", (e) => {
 canvas.addEventListener("mouseup", stopDrawing);
 canvas.addEventListener("mouseleave", stopDrawing);
 
+// Função para limpar o canvas
 function clearCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
+// Função para alternar entre o modo desenho e borracha
 function toggleEraser() {
     eraser = !eraser;
     if (eraser) {
@@ -81,6 +110,7 @@ function toggleEraser() {
     }
 }
 
+// Função para exibir o exercício atual
 function showExercise() {
     const exercise = exercises[currentExercise];
     document.getElementById('exercises').innerHTML = `    
@@ -92,6 +122,7 @@ function showExercise() {
     document.getElementById('message').innerHTML = '';
 }
 
+// Função para submeter a resposta
 function submitAnswer() {
     const userAnswer = parseInt(document.getElementById('answer').value);
     const correctAnswer = exercises[currentExercise].answer;
@@ -107,6 +138,7 @@ function submitAnswer() {
     }
 }
 
+// Função para exibir os resultados
 function showResults() {
     let feedback = '';
     let correctAnswersCount = 0;
@@ -133,6 +165,7 @@ function showResults() {
     }
 }
 
+// Função para ir para o próximo nível
 function nextLevel() {
     if (currentLevel === 1) {
         // Passar para o nível 2
@@ -154,4 +187,5 @@ function nextLevel() {
     showExercise();
 }
 
+// Exibir o exercício inicial
 showExercise();
