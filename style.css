@@ -1,38 +1,33 @@
-:root {
-    --primary-color: #4CAF50;
-    --secondary-color: #2e7d32;
-    --background-color: #f0f8ff;
-    --highlight-color: #e8f5e9;
-    --correct-color: #28a745;
-    --incorrect-color: #dc3545;
-    --spacing: 20px;
-    --border-radius: 5px;
-    --font-family: Arial, sans-serif;
-}
-
-body {
-    font-family: var(--font-family);
-    text-align: center;
+/* Estilo global */
+body, html {
     margin: 0;
     padding: 0;
-    background-color: var(--background-color);
-    overflow-x: hidden; /* Evita rolagem lateral */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    overflow-x: hidden; /* Impede a rolagem lateral */
+    background-color: #f0f8ff;
 }
 
-h1 {
-    color: var(--primary-color);
-    margin-top: var(--spacing);
-}
-
-.video-container {
-    margin: var(--spacing) auto;
+/* Container principal */
+.container {
     width: 100%;
-    max-width: 1000px; /* Ajustando para desktop */
+    max-width: 100%; /* Garante que o conteúdo ocupe toda a largura disponível */
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+/* Título */
+h1 {
+    text-align: center;
+    color: #4CAF50;
+    margin-top: 20px;
+    font-size: 1.8em;
+}
+
+/* Estilo do vídeo */
+.video-container {
+    margin: 20px auto;
+    width: 90%;
+    max-width: 1000px;
     position: relative;
     padding-bottom: 56.25%; /* Proporção 16:9 */
     height: 0;
@@ -44,147 +39,131 @@ h1 {
     left: 0;
     width: 100%;
     height: 100%;
-    border-radius: var(--border-radius);
+    border-radius: 8px; /* Bordas arredondadas */
 }
 
-/* Ajuste para desktop */
+/* Ajustes para desktop */
 @media (min-width: 1024px) {
     .video-container {
-        max-width: 1200px; /* Aumenta o máximo no desktop */
+        max-width: 1200px; /* Aumentando o máximo no desktop */
     }
 }
 
-/* Container principal */
-.container {
-    margin: var(--spacing) auto;
-    width: 100%;
-    max-width: 800px;
-    padding: 0 10px;
-}
-
-/* Canvas responsivo */
+/* Estilo do canvas */
 canvas {
     display: block;
-    margin: var(--spacing) auto;
-    border: 2px solid var(--primary-color);
-    border-radius: var(--border-radius);
+    margin: 20px auto;
+    border: 2px solid #4CAF50;
+    border-radius: 5px;
     cursor: crosshair;
     background-color: #fff;
-    width: 100%; /* Canvas ocupa 100% da largura do container */
-    max-width: 600px; /* Máxima largura para o canvas */
-    height: auto; /* Ajusta a altura proporcionalmente à largura */
-    touch-action: none; /* Desativa o comportamento padrão de toque (impede o scroll durante o desenho) */
+    width: 100%;
+    max-width: 600px; /* Limita a largura máxima */
 }
 
-/* Ajustes para dispositivos menores */
-@media (max-width: 600px) {
-    .container {
-        padding: 10px;
-    }
-
-    canvas {
-        height: 200px; /* Reduzindo a altura do canvas para dispositivos menores */
-    }
-
-    h1 {
-        font-size: 1.5rem;
-    }
-}
-
-/* Estilo para botões e controles */
-button, select, input[type="range"], input[type="color"] {
+/* Botões e inputs */
+button, select, input[type="range"], input[type="color"], input[type="text"] {
     margin: 10px;
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
-    border: 2px solid var(--primary-color);
-    border-radius: var(--border-radius);
-    transition: background-color 0.3s, transform 0.2s;
+    border: 2px solid #4CAF50;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    width: 100%; /* Faz os controles ocupar 100% da largura disponível */
+    max-width: 250px; /* Limita a largura máxima para melhor aparência */
 }
 
-/* Efeito de hover para botões */
+/* Efeito de hover nos botões */
 button:hover {
     background-color: #45a049;
-    transform: scale(1.05); /* Leve aumento no tamanho para interação */
 }
 
-/* Efeito de foco nos controles */
-button:focus, select:focus, input[type="range"]:focus, input[type="color"]:focus {
-    outline: 3px solid #90ee90; /* Destaque ao receber foco */
-    outline-offset: 2px;
-}
-
-/* Controles responsivos */
+/* Estilo dos controles */
 .controls {
     display: flex;
+    flex-wrap: wrap; /* Faz com que os controles quebrem para a linha seguinte em telas pequenas */
     justify-content: center;
-    gap: var(--spacing);
+    gap: 10px;
     align-items: center;
-    margin: var(--spacing) 0;
+    margin: 20px 0;
 }
 
-/* Ajuste para dispositivos menores */
-@media (max-width: 600px) {
-    .controls {
-        flex-direction: column;
-        gap: 15px;
-    }
-}
-
-/* Estilos para mensagens e resultados */
+/* Mensagens */
 .message {
-    margin-top: var(--spacing);
+    margin-top: 20px;
     font-size: 18px;
 }
 
+/* Estilo dos resultados */
 .results {
-    margin-top: var(--spacing);
-    padding: var(--spacing);
-    border: 2px dashed var(--primary-color);
-    border-radius: var(--border-radius);
-    background-color: var(--highlight-color);
-    color: var(--secondary-color);
+    margin-top: 20px;
+    padding: 20px;
+    border: 2px dashed #4CAF50;
+    border-radius: 5px;
+    background-color: #e8f5e9;
+    color: #2e7d32;
     font-weight: bold;
-    max-width: 90%; /* Ajusta a largura para 90% do container */
-    width: 100%; /* Garante que a largura do campo seja 100% do container */
+    max-width: 90%;
     margin-left: auto;
     margin-right: auto;
     white-space: pre-line;
-    box-sizing: border-box; /* Inclui o padding na largura total */
 }
 
-/* Ajustes para dispositivos menores */
-@media (max-width: 600px) {
-    .results {
-        max-width: 100%; /* Ajusta para ocupar 100% da largura disponível */
-        padding: 15px; /* Reduz o padding */
-        font-size: 14px; /* Ajusta o tamanho da fonte */
-    }
-}
-
-/* Resultados de respostas */
+/* Itens de resultado */
 .result-item {
     margin-bottom: 15px;
     padding: 10px;
     background-color: #ffffff;
-    border: 1px solid var(--primary-color);
-    border-radius: var(--border-radius);
+    border: 1px solid #4CAF50;
+    border-radius: 5px;
     font-size: 16px;
 }
 
 .result-item.correct {
-    background-color: var(--highlight-color);
-    border-color: var(--correct-color);
+    background-color: #d4edda;
+    border-color: #28a745;
 }
 
 .result-item.incorrect {
     background-color: #f8d7da;
-    border-color: var(--incorrect-color);
+    border-color: #dc3545;
 }
 
-/* Estilo para dicas */
+/* Estilo de dica */
 .hint {
     font-style: italic;
     color: #888;
     margin-top: 10px;
+}
+
+/* Ajustes para dispositivos móveis */
+@media (max-width: 768px) {
+    /* Ajustar o tamanho do texto para telas pequenas */
+    h1 {
+        font-size: 1.5em;
+    }
+
+    .controls label, .controls input {
+        font-size: 1em;
+    }
+
+    /* Ajuste no canvas */
+    canvas {
+        width: 100%;
+        max-width: 90%; /* Ajusta o canvas para caber melhor na tela */
+    }
+
+    /* Ajuste de botões e controles */
+    button, input[type="range"], input[type="color"], select {
+        font-size: 14px; /* Ajuste no tamanho da fonte para dispositivos móveis */
+        padding: 8px 16px;
+        max-width: 100%;
+    }
+
+    /* Ajuste de resultados */
+    .results {
+        font-size: 14px; /* Reduz o tamanho da fonte para dispositivos móveis */
+        padding: 15px;
+    }
 }

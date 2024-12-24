@@ -30,106 +30,46 @@ let answers = [];
 let currentLevel = 1;
 let exercises = level1Exercises;
 
-// Configuração do canvas para desenho
+// Função de desenho no canvas
 const canvas = document.getElementById("drawingCanvas");
 const ctx = canvas.getContext("2d");
 let drawing = false;
 let eraser = false;
-let lastX = null;
-let lastY = null; // Variáveis para armazenar as últimas coordenadas
 
-// Função para ativar/desativar o modo de desenho
-function toggleDrawing() {
-    drawing = !drawing;
-    const pencilButton = document.getElementById("pencilButton");
-
-    if (drawing) {
-        pencilButton.textContent = "Desenho Ativado";
-    } else {
-        pencilButton.textContent = "Ativar Desenho";
-    }
-}
-
-// Função para obter o deslocamento do canvas em relação à página
-function getCanvasOffset() {
-    const rect = canvas.getBoundingClientRect();
-    return { x: rect.left, y: rect.top };
-}
-
-// Função para iniciar o desenho
 function startDrawing(e) {
     if (!drawing) return;
-
     ctx.lineWidth = document.getElementById("lineWidth").value;
     ctx.strokeStyle = document.getElementById("colorPicker").value;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
-
-    const offset = getCanvasOffset(); // Pega o deslocamento do canvas
-    const offsetX = e.clientX - offset.x; // Ajusta a posição do cursor
-    const offsetY = e.clientY - offset.y;
-
-    lastX = offsetX; // Salva as coordenadas iniciais
-    lastY = offsetY;
-
     ctx.beginPath();
-    ctx.moveTo(lastX, lastY);
+    ctx.moveTo(e.offsetX, e.offsetY);
+    canvas.addEventListener("mousemove", draw);
 }
 
-// Função para desenhar no canvas com suavização
 function draw(e) {
     if (!drawing) return;
-
-    const offset = getCanvasOffset(); // Pega o deslocamento do canvas
-    const offsetX = e.clientX - offset.x; // Ajusta a posição do cursor
-    const offsetY = e.clientY - offset.y;
-
-    // Suavizar a linha desenhada entre os pontos
-    if (lastX !== null && lastY !== null) {
-        ctx.lineTo(offsetX, offsetY);
-        ctx.stroke();
-    }
-
-    lastX = offsetX; // Atualiza a posição anterior
-    lastY = offsetY;
+    ctx.lineTo(e.offsetX, e.offsetY);
+    ctx.stroke();
 }
 
-// Função para parar o desenho
 function stopDrawing() {
-    if (!drawing) return;
-
+    drawing = false;
     canvas.removeEventListener("mousemove", draw);
-    canvas.removeEventListener("touchmove", draw);
-    lastX = null;
-    lastY = null; // Zera as coordenadas quando parar o desenho
 }
 
-// Eventos de mouse e toque
 canvas.addEventListener("mousedown", (e) => {
-    if (drawing) {
-        startDrawing(e);
-        canvas.addEventListener("mousemove", draw);
-    }
+    drawing = true;
+    startDrawing(e);
 });
 
 canvas.addEventListener("mouseup", stopDrawing);
 canvas.addEventListener("mouseleave", stopDrawing);
-canvas.addEventListener("touchstart", (e) => {
-    if (drawing) {
-        startDrawing(e);
-        canvas.addEventListener("touchmove", draw);
-    }
-});
 
-canvas.addEventListener("touchend", stopDrawing);
-canvas.addEventListener("touchcancel", stopDrawing);
-
-// Função para limpar o canvas
 function clearCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-// Função para alternar a borracha
 function toggleEraser() {
     eraser = !eraser;
     if (eraser) {
@@ -141,10 +81,9 @@ function toggleEraser() {
     }
 }
 
-// Funções relacionadas aos exercícios
 function showExercise() {
     const exercise = exercises[currentExercise];
-    document.getElementById('exercises').innerHTML = `    
+    document.getElementById('exercises').innerHTML = `
         <div class="exercise">
             <p><strong>Exercício ${currentExercise + 1}:</strong> ${exercise.equation}</p>
             <p><span class="hint">Dica: ${exercise.hint}</span></p>
@@ -156,7 +95,10 @@ function showExercise() {
 function submitAnswer() {
     const userAnswer = parseInt(document.getElementById('answer').value);
     const correctAnswer = exercises[currentExercise].answer;
-    answers.push({ userAnswer, correctAnswer });
+    answers.push({
+        userAnswer: userAnswer,
+        correctAnswer: correctAnswer
+    });
     currentExercise++;
     if (currentExercise < exercises.length) {
         showExercise();
@@ -168,6 +110,7 @@ function submitAnswer() {
 function showResults() {
     let feedback = '';
     let correctAnswersCount = 0;
+
     answers.forEach((item, index) => {
         const resultClass = item.userAnswer === item.correctAnswer ? 'correct' : 'incorrect';
         if (item.userAnswer === item.correctAnswer) correctAnswersCount++;
@@ -176,32 +119,40 @@ function showResults() {
                         <p><strong>Resposta Esperada:</strong> ${item.correctAnswer}</p>
                     </div>`;
     });
-    const totalQuestions = answers.length;
-    const accuracy = (correctAnswersCount / totalQuestions) * 100;
+
     document.getElementById('results').innerHTML = feedback;
-    document.getElementById('message').innerHTML = `Você acertou ${correctAnswersCount} de ${totalQuestions} questões! (${accuracy.toFixed(2)}%)`;
-    if (accuracy >= 60 && correctAnswersCount === exercises.length) {
+
+    // Cálculo da porcentagem de acertos
+    const totalQuestions = answers.length;
+    const accuracyPercentage = (correctAnswersCount / totalQuestions) * 100;
+    document.getElementById('message').innerHTML = `Você acertou ${correctAnswersCount} de ${totalQuestions} questões! (${accuracyPercentage.toFixed(2)}%)`;
+
+    // Exibe o botão "Próximo Nível" apenas se a porcentagem de acertos for igual ou superior a 60%
+    if (accuracyPercentage >= 60) {
         document.getElementById('nextLevelButton').style.display = 'inline-block';
     } else {
-        document.getElementById('message').innerHTML += "<p>Você precisa acertar pelo menos 60% das questões para avançar. Tente novamente.</p>";
         document.getElementById('nextLevelButton').style.display = 'none';
     }
 }
 
 function nextLevel() {
     if (currentLevel === 1) {
+        currentLevel = 2;
         exercises = level2Exercises;
-        currentExercise = 0;
-        document.getElementById('levelTitle').textContent = "Nível 2: Multiplicação e Divisão";
+        document.getElementById('videoContainerLevel1').style.display = 'none';
+        document.getElementById('videoContainerLevel2').style.display = 'block';
+        document.getElementById('levelTitle').textContent = 'Nível 2: Multiplicação e Divisão';
     } else if (currentLevel === 2) {
+        currentLevel = 3;
         exercises = level3Exercises;
-        currentExercise = 0;
-        document.getElementById('levelTitle').textContent = "Nível 3: Potenciação";
+        document.getElementById('videoContainerLevel2').style.display = 'none';
+        document.getElementById('videoContainerLevel3').style.display = 'block';
+        document.getElementById('levelTitle').textContent = 'Nível 3: Potenciação com Números Negativos';
     }
-    currentLevel++;
-    document.getElementById('nextLevelButton').style.display = 'none';
+    currentExercise = 0;
     showExercise();
+    document.getElementById('nextLevelButton').style.display = 'none';
 }
 
-// Inicializar o primeiro exercício
+// Inicializa o nível 1
 showExercise();
