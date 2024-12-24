@@ -43,19 +43,32 @@ function startDrawing(e) {
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     ctx.beginPath();
-    ctx.moveTo(e.offsetX, e.offsetY);
+    ctx.moveTo(e.offsetX || e.touches[0].clientX - canvas.offsetLeft, 
+               e.offsetY || e.touches[0].clientY - canvas.offsetTop);
     canvas.addEventListener("mousemove", draw);
+    canvas.addEventListener("touchmove", drawTouch, { passive: false });
 }
 
 function draw(e) {
     if (!drawing) return;
-    ctx.lineTo(e.offsetX, e.offsetY);
+    e.preventDefault(); // Impede o comportamento padrão de rolagem
+    ctx.lineTo(e.offsetX || e.touches[0].clientX - canvas.offsetLeft, 
+               e.offsetY || e.touches[0].clientY - canvas.offsetTop);
+    ctx.stroke();
+}
+
+function drawTouch(e) {
+    if (!drawing) return;
+    e.preventDefault(); // Impede o comportamento padrão de rolagem
+    ctx.lineTo(e.touches[0].clientX - canvas.offsetLeft, 
+               e.touches[0].clientY - canvas.offsetTop);
     ctx.stroke();
 }
 
 function stopDrawing() {
     drawing = false;
     canvas.removeEventListener("mousemove", draw);
+    canvas.removeEventListener("touchmove", drawTouch);
 }
 
 canvas.addEventListener("mousedown", (e) => {
@@ -66,10 +79,22 @@ canvas.addEventListener("mousedown", (e) => {
 canvas.addEventListener("mouseup", stopDrawing);
 canvas.addEventListener("mouseleave", stopDrawing);
 
+// Para dispositivos móveis, usamos eventos touch
+canvas.addEventListener("touchstart", (e) => {
+    e.preventDefault(); // Impede a rolagem
+    drawing = true;
+    startDrawing(e);
+});
+
+canvas.addEventListener("touchend", stopDrawing);
+canvas.addEventListener("touchcancel", stopDrawing);
+
+// Limpar o canvas
 function clearCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
+// Alternar para a ferramenta de borracha
 function toggleEraser() {
     eraser = !eraser;
     if (eraser) {
@@ -81,6 +106,7 @@ function toggleEraser() {
     }
 }
 
+// Função de exibição de exercícios
 function showExercise() {
     const exercise = exercises[currentExercise];
     document.getElementById('exercises').innerHTML = `
@@ -92,6 +118,7 @@ function showExercise() {
     document.getElementById('message').innerHTML = '';
 }
 
+// Função para submeter a resposta
 function submitAnswer() {
     const userAnswer = parseInt(document.getElementById('answer').value);
     const correctAnswer = exercises[currentExercise].answer;
@@ -107,6 +134,7 @@ function submitAnswer() {
     }
 }
 
+// Função para exibir os resultados
 function showResults() {
     let feedback = '';
     let correctAnswersCount = 0;
@@ -135,6 +163,7 @@ function showResults() {
     }
 }
 
+// Função para passar para o próximo nível
 function nextLevel() {
     if (currentLevel === 1) {
         currentLevel = 2;
