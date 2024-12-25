@@ -47,42 +47,59 @@ input[type="range"] {
     margin: 0 10px;
 }
 
-/* Estilo básico dos botões */
-button {
-    padding: 12px 24px; /* Aumenta o tamanho do botão */
-    font-size: 16px;  /* Ajusta o tamanho da fonte */
-    margin: 10px 0;  /* Adiciona espaçamento entre os botões */
-    cursor: pointer;
-    border: none;
-    border-radius: 6px;  /* Bordas mais arredondadas para um visual mais moderno */
-    background-color: #007bff;  /* Cor de fundo inicial */
-    color: white;
-    transition: background-color 0.3s, transform 0.2s;  /* Transição suave para o fundo e efeito de clique */
-}
-
-/* Efeito de hover para melhorar a interação */
-button:hover {
-    background-color: #0056b3;  /* Escurece o botão ao passar o mouse */
-    transform: scale(1.05);  /* Aumenta um pouco o botão ao passar o mouse */
-}
-
-/* Efeito de clique para proporcionar feedback */
-button:active {
-    background-color: #004085;  /* Cor mais escura quando o botão é pressionado */
-    transform: scale(0.98);  /* Reduz o botão levemente quando clicado */
-}
-
-/* Estilo para botões desativados */
-button:disabled {
-    background-color: #cccccc;  /* Cor de fundo mais clara para botões desativados */
-    cursor: not-allowed;  /* Aparece o cursor de bloqueio para indicar que o botão não pode ser clicado */
-}
-
 #drawingCanvas {
     border: 1px solid #ccc;
     margin-top: 20px;
     max-width: 100%; /* Ajusta o canvas para telas menores */
     height: auto;   /* Faz o canvas manter a proporção */
+}
+
+.message {
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+/* Menu inferior para os botões do canvas */
+#canvasTools {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 10px;
+    margin-top: 10px;
+    border-top: 2px solid #ccc; /* Adiciona uma linha de separação */
+    position: relative;
+}
+
+/* Estilo dos botões dentro do menu inferior */
+#canvasTools button {
+    padding: 10px 15px;
+    margin: 0 10px;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+/* Efeito de hover para os botões */
+#canvasTools button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+/* Efeito de clique para os botões */
+#canvasTools button:active {
+    background-color: #004085;
+    transform: scale(0.98);
+}
+
+/* Estilo para botões desativados */
+#canvasTools button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
 }
 
 .message {
