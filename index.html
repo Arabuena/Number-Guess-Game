@@ -31,14 +31,14 @@
         <canvas id="drawingCanvas" width="600" height="300"></canvas>
 
         <!-- Ferramentas de Desenho -->
-        <canvas id="drawingCanvas"></canvas>
-
-        <div id="canvasTools">
-            <button id="colorButton">Cor</button>
-            <button id="lineWidthButton">Espessura</button>
-            <button id="eraserButton">Borracha</button>
+        <div class="controls">
+            <label for="colorPicker">Cor:</label>
+            <input type="color" id="colorPicker" value="#000000">
+            <label for="lineWidth">Espessura:</label>
+            <input type="range" id="lineWidth" min="1" max="10" value="2">
+            <button onclick="clearCanvas()">Limpar</button>
+            <button id="eraserButton" onclick="toggleEraser()">Ativar Borracha</button>
         </div>
-        
 
         <!-- Entrada de Resposta -->
         <input type="text" id="answer" placeholder="Sua resposta">
