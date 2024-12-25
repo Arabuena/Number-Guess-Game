@@ -36,19 +36,6 @@ const ctx = canvas.getContext("2d");
 let drawing = false;
 let eraser = false;
 
-function getCoordinates(e) {
-    const rect = canvas.getBoundingClientRect();
-    let x, y;
-    if (e.touches) {
-        x = e.touches[0].clientX - rect.left;
-        y = e.touches[0].clientY - rect.top;
-    } else {
-        x = e.offsetX;
-        y = e.offsetY;
-    }
-    return { x, y };
-}
-
 function startDrawing(e) {
     drawing = true;
     ctx.lineWidth = document.getElementById("lineWidth").value;
@@ -56,37 +43,55 @@ function startDrawing(e) {
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     ctx.beginPath();
-    const { x, y } = getCoordinates(e);
+    const { x, y } = getCanvasCoordinates(e);
     ctx.moveTo(x, y);
 }
 
 function draw(e) {
     if (!drawing) return;
-    e.preventDefault();
-    const { x, y } = getCoordinates(e);
+    e.preventDefault(); // Impede o comportamento padrão de rolagem
+    const { x, y } = getCanvasCoordinates(e);
     ctx.lineTo(x, y);
     ctx.stroke();
 }
 
-function stopDrawing() {
-    drawing = false;
-    ctx.closePath();
+function getCanvasCoordinates(event) {
+    const rect = canvas.getBoundingClientRect();
+    let x, y;
+
+    if (event.touches) {
+        x = event.touches[0].clientX - rect.left;
+        y = event.touches[0].clientY - rect.top;
+    } else {
+        x = event.clientX - rect.left;
+        y = event.clientY - rect.top;
+    }
+
+    // Ajuste para evitar deslocamentos adicionais
+    x *= canvas.width / rect.width;
+    y *= canvas.height / rect.height;
+
+    return { x, y };
 }
 
-canvas.addEventListener("mousedown", startDrawing);
-canvas.addEventListener("mousemove", draw);
+function stopDrawing() {
+    drawing = false;
+}
+
+canvas.addEventListener("mousedown", (e) => {
+    startDrawing(e);
+    canvas.addEventListener("mousemove", draw);
+});
+
 canvas.addEventListener("mouseup", stopDrawing);
 canvas.addEventListener("mouseleave", stopDrawing);
 
+// Para dispositivos móveis, usamos eventos touch
 canvas.addEventListener("touchstart", (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Impede a rolagem
     startDrawing(e);
+    canvas.addEventListener("touchmove", draw, { passive: false });
 });
-
-canvas.addEventListener("touchmove", (e) => {
-    e.preventDefault();
-    draw(e);
-}, { passive: false });
 
 canvas.addEventListener("touchend", stopDrawing);
 canvas.addEventListener("touchcancel", stopDrawing);
