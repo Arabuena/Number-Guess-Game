@@ -37,38 +37,30 @@ let drawing = false;
 let eraser = false;
 
 function startDrawing(e) {
-    if (!drawing) return;
+    drawing = true;
     ctx.lineWidth = document.getElementById("lineWidth").value;
     ctx.strokeStyle = document.getElementById("colorPicker").value;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
-    ctx.beginPath();
-    const rect = canvas.getBoundingClientRect();
-    const x = e.offsetX || e.touches[0].clientX - rect.left;
-    const y = e.offsetY || e.touches[0].clientY - rect.top;
-    ctx.moveTo(x, y);
-    canvas.addEventListener("mousemove", draw);
-    canvas.addEventListener("touchmove", drawTouch, { passive: false });
-}
 
-function draw(e) {
-    if (!drawing) return;
-    e.preventDefault(); // Impede o comportamento padrão de rolagem
-    const rect = canvas.getBoundingClientRect();
-    const x = e.offsetX || e.touches[0].clientX - rect.left;
-    const y = e.offsetY || e.touches[0].clientY - rect.top;
-    ctx.lineTo(x, y);
-    ctx.stroke();
+  
+// Ajuste da coordenada inicial
+const rect = canvas.getBoundingClientRect();
+const x = (e.touches ? e.touches[0].clientX : e.offsetX) - rect.left;
+const y = (e.touches ? e.touches[0].clientY : e.offsetY) - rect.top;
+
+ctx.beginPath();
+ctx.moveTo(x, y); // Começa exatamente no ponto de toque
 }
 
 function drawTouch(e) {
-    if (!drawing) return;
-    e.preventDefault(); // Impede a rolagem
-    const rect = canvas.getBoundingClientRect();
-    const x = e.touches[0].clientX - rect.left;
-    const y = e.touches[0].clientY - rect.top;
-    ctx.lineTo(x, y);
-    ctx.stroke();
+if (!drawing) return;
+e.preventDefault(); // Impede a rolagem
+const rect = canvas.getBoundingClientRect();
+const x = e.touches[0].clientX - rect.left;
+const y = e.touches[0].clientY - rect.top;
+ctx.lineTo(x, y);
+ctx.stroke();
 }
 
 function stopDrawing() {
