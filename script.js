@@ -43,8 +43,10 @@ function startDrawing(e) {
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     ctx.beginPath();
-    ctx.moveTo(e.offsetX || e.touches[0].clientX - canvas.offsetLeft, 
-               e.offsetY || e.touches[0].clientY - canvas.offsetTop);
+    const rect = canvas.getBoundingClientRect();
+    const x = e.offsetX || e.touches[0].clientX - rect.left;
+    const y = e.offsetY || e.touches[0].clientY - rect.top;
+    ctx.moveTo(x, y);
     canvas.addEventListener("mousemove", draw);
     canvas.addEventListener("touchmove", drawTouch, { passive: false });
 }
@@ -52,24 +54,22 @@ function startDrawing(e) {
 function draw(e) {
     if (!drawing) return;
     e.preventDefault(); // Impede o comportamento padrão de rolagem
-    ctx.lineTo(e.offsetX || e.touches[0].clientX - canvas.offsetLeft, 
-               e.offsetY || e.touches[0].clientY - canvas.offsetTop);
+    const rect = canvas.getBoundingClientRect();
+    const x = e.offsetX || e.touches[0].clientX - rect.left;
+    const y = e.offsetY || e.touches[0].clientY - rect.top;
+    ctx.lineTo(x, y);
     ctx.stroke();
 }
 
 function drawTouch(e) {
     if (!drawing) return;
     e.preventDefault(); // Impede a rolagem
-
-    // Ajuste da coordenada Y levando em consideração a posição do canvas na tela
     const rect = canvas.getBoundingClientRect();
     const x = e.touches[0].clientX - rect.left;
     const y = e.touches[0].clientY - rect.top;
-
     ctx.lineTo(x, y);
     ctx.stroke();
 }
-
 
 function stopDrawing() {
     drawing = false;
