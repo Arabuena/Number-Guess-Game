@@ -9,63 +9,45 @@
 <body>
     <h1>Matemática com o professor Dandan</h1>
 
-    <!-- Vídeo Nível 1 -->
+    <!-- Contêiner de Vídeos -->
     <div class="video-container" id="videoContainerLevel1">
-        <iframe id="video1" 
-            src="https://www.youtube.com/embed/jgG7jjTuICg" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen>
-        </iframe>
+        <iframe id="video1" src="https://www.youtube.com/embed/jgG7jjTuICg" frameborder="0" allowfullscreen></iframe>
     </div>
-
-    <!-- Vídeo Nível 2 -->
     <div class="video-container" id="videoContainerLevel2" style="display: none;">
-        <iframe id="video2" 
-            src="https://www.youtube.com/embed/ewl4FMjjxp0" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen>
-        </iframe>
+        <iframe id="video2" src="https://www.youtube.com/embed/ewl4FMjjxp0" frameborder="0" allowfullscreen></iframe>
     </div>
-
-    <!-- Vídeo Nível 3 (novo) -->
     <div class="video-container" id="videoContainerLevel3" style="display: none;">
-        <iframe id="video3" 
-            src="https://www.youtube.com/embed/oE29uuA7eOQ?start=12" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen>
-        </iframe>
+        <iframe id="video3" src="https://www.youtube.com/embed/oE29uuA7eOQ?start=12" frameborder="0" allowfullscreen></iframe>
     </div>
 
+    <!-- Exercícios -->
     <div class="container" id="containerContent">
         <h2 id="levelTitle">Nível 1: Soma e Subtração</h2>
-        <p class="instructions">Responda as perguntas abaixo:</p>
+        <p class="instructions">Responda às perguntas abaixo:</p>
 
         <div id="exercises"></div>
 
+        <!-- Canvas -->
         <canvas id="drawingCanvas" width="600" height="300"></canvas>
 
+        <!-- Ferramentas de Desenho -->
         <div class="controls">
             <label for="colorPicker">Cor:</label>
             <input type="color" id="colorPicker" value="#000000">
-
             <label for="lineWidth">Espessura:</label>
             <input type="range" id="lineWidth" min="1" max="10" value="2">
-
-            <button onclick="clearCanvas()">Limpar Rascunho</button>
-
+            <button onclick="clearCanvas()">Limpar</button>
             <button id="eraserButton" onclick="toggleEraser()">Ativar Borracha</button>
         </div>
 
-        <input type="text" id="answer" placeholder="Sua resposta" />
+        <!-- Entrada de Resposta -->
+        <input type="text" id="answer" placeholder="Sua resposta">
         <button onclick="submitAnswer()">Enviar Resposta</button>
 
+        <!-- Mensagens e Resultados -->
         <div class="message" id="message"></div>
         <div class="results" id="results"></div>
-
-        <button id="nextLevelButton" onclick="nextLevel()" style="display: none;">Avançar para o Próximo Vídeo</button>
+        <button id="nextLevelButton" onclick="nextLevel()" style="display: none;">Próximo Nível</button>
     </div>
 
     <script src="script.js"></script>

@@ -1,169 +1,73 @@
-/* Estilo global */
-body, html {
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
-    overflow-x: hidden; /* Impede a rolagem lateral */
-    background-color: #f0f8ff;
-}
-
-/* Container principal */
-.container {
-    width: 100%;
-    max-width: 100%; /* Garante que o conteúdo ocupe toda a largura disponível */
-    box-sizing: border-box;
-    padding: 10px;
-}
-
-/* Título */
-h1 {
     text-align: center;
-    color: #4CAF50;
-    margin-top: 20px;
-    font-size: 1.8em;
+    background-color: #f4f4f4;
 }
 
-/* Estilo do vídeo */
+h1 {
+    background-color: #007bff;
+    color: white;
+    margin: 0;
+    padding: 20px;
+}
+
 .video-container {
     margin: 20px auto;
     width: 90%;
-    max-width: 1000px;
-    position: relative;
-    padding-bottom: 56.25%; /* Proporção 16:9 */
-    height: 0;
+    max-width: 800px;
 }
 
-.video-container iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
+iframe {
     width: 100%;
-    height: 100%;
-    border-radius: 8px; /* Bordas arredondadas */
+    height: 400px;
 }
 
-/* Ajustes para desktop */
-@media (min-width: 1024px) {
-    .video-container {
-        max-width: 1200px; /* Aumentando o máximo no desktop */
-    }
-}
-
-/* Estilo do canvas */
-canvas {
-    display: block;
-    margin: 20px auto;
-    border: 2px solid #4CAF50;
-    border-radius: 5px;
-    cursor: crosshair;
-    background-color: #fff;
-    width: 100%;
-    max-width: 600px; /* Limita a largura máxima */
-}
-
-/* Botões e inputs */
-button, select, input[type="range"], input[type="color"], input[type="text"] {
-    margin: 10px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    border: 2px solid #4CAF50;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-    width: 100%; /* Faz os controles ocupar 100% da largura disponível */
-    max-width: 250px; /* Limita a largura máxima para melhor aparência */
-}
-
-/* Efeito de hover nos botões */
-button:hover {
-    background-color: #45a049;
-}
-
-/* Estilo dos controles */
-.controls {
-    display: flex;
-    flex-wrap: wrap; /* Faz com que os controles quebrem para a linha seguinte em telas pequenas */
-    justify-content: center;
-    gap: 10px;
-    align-items: center;
-    margin: 20px 0;
-}
-
-/* Mensagens */
-.message {
-    margin-top: 20px;
-    font-size: 18px;
-}
-
-/* Estilo dos resultados */
-.results {
-    margin-top: 20px;
+.container {
     padding: 20px;
-    border: 2px dashed #4CAF50;
-    border-radius: 5px;
-    background-color: #e8f5e9;
-    color: #2e7d32;
+    margin: auto;
+    max-width: 800px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.controls {
+    margin: 10px 0;
+}
+
+.controls label {
+    margin-right: 5px;
+}
+
+input[type="color"],
+input[type="range"] {
+    margin: 0 10px;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#drawingCanvas {
+    border: 1px solid #ccc;
+    margin-top: 20px;
+}
+
+.message {
     font-weight: bold;
-    max-width: 90%;
-    margin-left: auto;
-    margin-right: auto;
-    white-space: pre-line;
-}
-
-/* Itens de resultado */
-.result-item {
-    margin-bottom: 15px;
-    padding: 10px;
-    background-color: #ffffff;
-    border: 1px solid #4CAF50;
-    border-radius: 5px;
-    font-size: 16px;
-}
-
-.result-item.correct {
-    background-color: #d4edda;
-    border-color: #28a745;
-}
-
-.result-item.incorrect {
-    background-color: #f8d7da;
-    border-color: #dc3545;
-}
-
-/* Estilo de dica */
-.hint {
-    font-style: italic;
-    color: #888;
-    margin-top: 10px;
-}
-
-/* Ajustes para dispositivos móveis */
-@media (max-width: 768px) {
-    /* Ajustar o tamanho do texto para telas pequenas */
-    h1 {
-        font-size: 1.5em;
-    }
-
-    .controls label, .controls input {
-        font-size: 1em;
-    }
-
-    /* Ajuste no canvas */
-    canvas {
-        width: 100%;
-        max-width: 90%; /* Ajusta o canvas para caber melhor na tela */
-    }
-
-    /* Ajuste de botões e controles */
-    button, input[type="range"], input[type="color"], select {
-        font-size: 14px; /* Ajuste no tamanho da fonte para dispositivos móveis */
-        padding: 8px 16px;
-        max-width: 100%;
-    }
-
-    /* Ajuste de resultados */
-    .results {
-        font-size: 14px; /* Reduz o tamanho da fonte para dispositivos móveis */
-        padding: 15px;
-    }
+    margin-top: 20px;
 }
