@@ -47,19 +47,35 @@ input[type="range"] {
     margin: 0 10px;
 }
 
+/* Estilo básico dos botões */
 button {
-    padding: 10px 20px;
-    margin: 5px;
+    padding: 12px 24px; /* Aumenta o tamanho do botão */
+    font-size: 16px;  /* Ajusta o tamanho da fonte */
+    margin: 10px 0;  /* Adiciona espaçamento entre os botões */
     cursor: pointer;
     border: none;
-    border-radius: 4px;
-    background-color: #007bff;
+    border-radius: 6px;  /* Bordas mais arredondadas para um visual mais moderno */
+    background-color: #007bff;  /* Cor de fundo inicial */
     color: white;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.2s;  /* Transição suave para o fundo e efeito de clique */
 }
 
+/* Efeito de hover para melhorar a interação */
 button:hover {
-    background-color: #0056b3;
+    background-color: #0056b3;  /* Escurece o botão ao passar o mouse */
+    transform: scale(1.05);  /* Aumenta um pouco o botão ao passar o mouse */
+}
+
+/* Efeito de clique para proporcionar feedback */
+button:active {
+    background-color: #004085;  /* Cor mais escura quando o botão é pressionado */
+    transform: scale(0.98);  /* Reduz o botão levemente quando clicado */
+}
+
+/* Estilo para botões desativados */
+button:disabled {
+    background-color: #cccccc;  /* Cor de fundo mais clara para botões desativados */
+    cursor: not-allowed;  /* Aparece o cursor de bloqueio para indicar que o botão não pode ser clicado */
 }
 
 #drawingCanvas {
